@@ -4,10 +4,8 @@
 # of your markdown file to generate a table of contents. 
 #
 # Requires python-markdown. Old versions of python-markdown may not support the
-# "toc_depth" parameter. In that case, remove the `-c` parameter from the
-# python command, and the argument that follows (the entire printf line). The
-# toc_depth value can also be changed to include headers outside of the h2 - h3
-# range.
+# "toc_depth" parameter. In that case, change $mdcmd to one of the other
+# available options, or create your own.
 #
 # Useage:
 #
@@ -23,6 +21,10 @@ tmpdir="/tmp/${appname}/"
 tmpfile="${datetime}.html"
 outfile="${tmpdir}${tmpfile}"
 
+mdcmd="python -m markdown -x toc -c <(printf \"toc:\n  toc_depth: 2-3\n\")"
+#mdcmd="python -m markdown -x toc"
+#mdcmd="markdown"
+
 main() {
     # Create html files in /tmp and open in a browser
 
@@ -36,9 +38,7 @@ main() {
         printf "<link rel=\"stylesheet\" href=\"%s\">\n" "$cssfile" > "$outfile"
     fi
 
-    python -m markdown -x toc -c \
-    <(printf "toc:\n  toc_depth: 2-3\n") \
-    "$1" >> "$outfile" && "$browser" "$outfile"
+    eval "$mdcmd" "$1" >> "$outfile" && "$browser" "$outfile"
 }
 
-main "$1"
+main "$1" & disown
