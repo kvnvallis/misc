@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Convert a 23fps standard definition video file to ntsc dvd format, i.e. mpeg2
+# Convert a 24fps standard definition video file to ntsc dvd format, i.e. mpeg2
 # vob with pulldown flags for aspect ratio and framerate. 
 
 INFILE="$1"
