@@ -12,7 +12,7 @@ Autocompletes ip addresses for the subnet mask `255.255.255.0`, using a recursiv
 
 ## avi2dvd.sh
 
-Specifically created for converting the standard definition theatrical cut of *Return of the Jedi* into a dvd, but applicable to other transcodes with some modification.
+Specifically created for converting the standard definition theatrical cut of *Return of the Jedi* into a dvd, but applicable to other transcodes with some modification. Refer to the mencoder documentation <http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-vcd-dvd.html>.
 
 ## mkdvd.sh
 
