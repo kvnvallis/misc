@@ -11,6 +11,8 @@ OUTFILE="$2"
 # file shows `720x304 [SAR 1:1 DAR 45:19]`, 45/19=2.37 and 854/2.37=360, so
 # scale=720:360
 
+# Or just use 2.35, the standard aspect ratio for "Cinemascope" NTSC
+
 # Audio can be copied with `-oac copy` so long as it is ac3. The audio options
 # for -lavcopts probably don't apply in this case.
 
