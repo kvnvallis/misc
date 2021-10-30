@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 #
 # A generic processing loop for running ffmpeg on multiple files
+#
+# Useage:
+#     ffloop.sh ./*.mkv
 
 extension=".mp4"  # file type for output files
 opts="-map 0:v -map 0:a -c copy -map_chapters -1"  # options supplied to ffmpeg
