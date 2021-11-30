@@ -7,8 +7,8 @@
 #     $ ffloop.sh ./files.txt
 
 extension=".mp4"  # file type for output files
-opts_out="-map 0:v -map 0:a -c copy -map_chapters -1" # options applied to ffmpeg output
-opts_in=""
+opts_out="-map 0:v -map 0:a -c copy -map_chapters -1"  # options applied to ffmpeg output
+opts_in=""  # applied to input; usually not needed
 
 run_ffmpeg() {
     video_in="$1"
@@ -18,14 +18,13 @@ run_ffmpeg() {
     ffmpeg -nostdin $opts_in -i "${video_in}" ${opts_out} "${video_out}"
 }
 
-## Read each line of a file as input to ffmpeg
+# Read each line of a file as input to ffmpeg
 if [ $# == 1 ] && [ -f "$1" ] && [ ${1##*.} == 'txt' ]; then
     args_file="$1"
     while read infile; do
         run_ffmpeg "$infile"
     done < "$args_file"
-## Read input files from the command line
-else
+else  # Read input files from the command line
     for infile in "$@"; do
         run_ffmpeg "$infile"
     done
