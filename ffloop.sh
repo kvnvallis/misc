@@ -6,16 +6,24 @@
 #     $ ffloop.sh ./*.mkv
 #     $ ffloop.sh ./files.txt
 
-extension=".mp4"  # file type for output files
-opts_out="-map 0:v -map 0:a -c copy -map_chapters -1"  # options applied to ffmpeg output
+extract_subs=true
+vid_extension=".mpg"
+sub_extension='.srt'
+vidout_opts="-target film-dvd -s 640x480"
+subout_opts=""
 opts_in=""  # applied to input; usually not needed
 
 run_ffmpeg() {
     video_in="$1"
     filename_dot_ext=$(basename -- "$video_in")
     filename="${filename_dot_ext%.*}"
-    video_out="${filename}${extension}"
-    ffmpeg -nostdin $opts_in -i "${video_in}" ${opts_out} "${video_out}"
+    video_out="${filename}${vid_extension}"
+    subtitle_out="${filename}${sub_extension}"
+    if [ $extract_subs ] ; then
+        ffmpeg -nostdin $opts_in -i "${video_in}" ${vidout_opts} "${video_out}" $subout_opts "$subtitle_out"
+    else
+        ffmpeg -nostdin $opts_in -i "${video_in}" ${vidout_opts} "${video_out}"
+    fi
 }
 
 # Read each line of a file as input to ffmpeg
