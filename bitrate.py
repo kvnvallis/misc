@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # Calculate target bitrate to fit files on disc
 
-# NOTE: Two-pass encoding will only produce approximate file size, so leave
-# yourself some room. Subtract 100 from the target bitrate before passing it to
-# ffmpeg.
+# Leave some space on the dvd to make sure everything fits. Subtract 100 from
+# the target bitrate before passing it to ffmpeg.
 
 # Useage:
 #
