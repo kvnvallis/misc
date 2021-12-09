@@ -9,8 +9,8 @@
 extract_subs=true
 vid_extension=".mpg"
 sub_extension='.srt'
-vidout_opts="-target film-dvd -s 640x480"
-subout_opts=""
+vidout_opts="-target film-dvd"
+subout_opts="-c:s text"
 opts_in=""  # applied to input; usually not needed
 
 run_ffmpeg() {
