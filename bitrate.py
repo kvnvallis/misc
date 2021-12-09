@@ -2,7 +2,7 @@
 # Calculate target bitrate to fit files on disc
 
 # NOTE: Two-pass encoding will only produce approximate file size, so leave
-# yourself some room. Subtract 200 from the target bitrate before passing it to
+# yourself some room. Subtract 100 from the target bitrate before passing it to
 # ffmpeg.
 
 # Useage:
@@ -24,14 +24,15 @@
 #    [1421.8615542388332, 482.7142206016409, 1866.4949863263446, 935.9292388331814]
 
 
-# audio bitrate in kbps
-abr = 448  
+# audio bitrate in kbps for output file
+# recommended 224k for dvd 2 channel audio, 448k 5.1 channel
+abr = 448
 
 # play time for all files on disc in (minutes, seconds)
 durations = [(46,37), (28,19), (26,35), (38,16), (43,30)]
 
 # for files of the same duration
-#durations = [(20,0)] * 7
+#durations = [(23,23)] * 7
 
 
 def to_kilobits(megabytes):
