@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # Calculate target bitrate to fit files on disc
 
-# NOTE: Two-pass encoding with the target bitrate will only produce approximate file size, so leave yourself some room. A safe rule of thumb is to subtract 200 and round up or down to the nearest hundred, so 2976 becomes 2800k.
+# NOTE: Two-pass encoding will only produce approximate file size, so leave
+# yourself some room. Subtract 200 from the target bitrate before passing it to
+# ffmpeg.
 
 # Useage:
 #
