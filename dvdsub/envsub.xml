@@ -1,0 +1,11 @@
+<subpictures format="$format">
+   <stream>
+      <textsub filename="$srtfile"
+         fontsize="22.0" font="$font" horizontal-alignment="center"
+         vertical-alignment="bottom" left-margin="60" right-margin="60"
+         top-margin="20" bottom-margin="30" subtitle-fps="25"
+         movie-fps="25" movie-width="$movie_width" movie-height="$movie_height"
+         force="$force"
+      />
+   </stream>
+</subpictures>

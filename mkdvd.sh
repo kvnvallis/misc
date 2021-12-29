@@ -10,6 +10,6 @@ while true; do
     read -p "Burn a DVD? [y/N] " yn
     case $yn in
         [Yy] ) wodim speed=4 dev=/dev/cdrom -v -data "./$OUTFILE"; break;;
-        [Nn] | '' ) printf "Burn a disc later with:\n\t wodim speed=4 $OUTFILE\n"; exit;; 
+        [Nn] | '' ) printf "Burn a disc later with:\n\t wodim -v speed=4 $OUTFILE\n"; exit;; 
     esac
 done
