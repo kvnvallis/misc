@@ -11,45 +11,53 @@
 
 TWO_PASS=false
 EXTRACT_SUBS=true
+EXTRACT_AUDIO=false
 VID_EXTENSION=".mkv"
 SUB_EXTENSION=".srt"
+AUD_EXTENSION=""
 VIDOUT_OPTS="-map 0:v:0 -map 0:a:0 -c:a copy -c:v libx264 -s 640x480 -aspect 4:3 -crf 18"
 SUBOUT_OPTS="-map 0:s:0 -c:s text"
+AUDOUT_OPTS=""
 OPTS_IN=""  # applied to input; usually not needed
 
 ### END OF USER CONFIG ###
 
 
 run_ffmpeg() {
+    # Takes one argument, the name of the input file to ffmpeg
     video_in="$1"
-    base_cmd="ffmpeg -nostdin $OPTS_IN -i"
     filename_dot_ext=$(basename -- "$video_in")
     filename="${filename_dot_ext%.*}"
     video_out="${filename}${VID_EXTENSION}"
     subtitle_out="${filename}${SUB_EXTENSION}"
+    audio_out="${filename}${AUD_EXTENSION}"
 
-    if [ -f "./${video_out}" ] && [ $EXTRACT_SUBS = true ]; then
-        echo Encoding subtitles only
-        $base_cmd "$video_in" $SUBOUT_OPTS "$subtitle_out"
+    # Assign ffmpeg arguments to function's positional parameters, so we can build the command line piece by piece.
+    set -- -nostdin $OPTS_IN -i "$video_in"
 
-    elif [ $EXTRACT_SUBS = true ]; then
-        echo Encoding video and subtitles
-        if [ $TWO_PASS = true ]; then
-            $base_cmd "$video_in" -pass 1 $VIDOUT_OPTS -an -f null -y /dev/null && \
-            $base_cmd "$video_in" -pass 2 $VIDOUT_OPTS "$video_out" $SUBOUT_OPTS "$subtitle_out"
-        else
-            $base_cmd "$video_in" $VIDOUT_OPTS "$video_out" $SUBOUT_OPTS "$subtitle_out"
-        fi
-
-    else
-        echo Encoding video
-        if [ $TWO_PASS = true ]; then
-            $base_cmd "$video_in" -pass 1 $VIDOUT_OPTS -an -f null -y /dev/null && \
-            $base_cmd "$video_in" -pass 2 $VIDOUT_OPTS "$video_out"
-        else
-            $base_cmd "$video_in" $VIDOUT_OPTS "$video_out"
-        fi
+    if [ "$TWO_PASS" = true ]; then
+        pass_count=1
+        set -- "$@" $VIDOUT_OPTS -pass $pass_count -an -f null -y /dev/null
+        ffmpeg "$@"
+        pass_count=$((pass_count+1))
     fi
+
+    if [ "$pass_count" = 2 ]; then
+        set -- "$@" $VIDOUT_OPTS -pass $pass_count "$video_out"
+    else
+        # same thing as above but without -pass
+        set -- "$@" $VIDOUT_OPTS "$video_out"
+    fi
+
+    if [ "$EXTRACT_SUBS" = true ]; then
+        set -- "$@" $SUBOUT_OPTS "$subtitle_out"
+    fi
+
+    if [ "$EXTRACT_AUDIO" = true ]; then
+        set -- "$@" $AUDOUT_OPTS "$audio_out"
+    fi
+
+    ffmpeg "$@"
 }
 
 
