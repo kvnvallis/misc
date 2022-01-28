@@ -9,6 +9,7 @@
 
 ### USER CONFIG ###
 
+DRY_RUN=true  # echo commands but don't run them
 TWO_PASS=false
 EXTRACT_SUBS=true
 EXTRACT_AUDIO=false
@@ -38,11 +39,13 @@ run_ffmpeg() {
     if [ "$TWO_PASS" = true ]; then
         pass_count=1
         set -- "$@" $VIDOUT_OPTS -pass $pass_count -an -f null -y /dev/null
-        ffmpeg "$@"
+		[ "$DRY_RUN" != true ] && ffmpeg "$@" || echo ffmpeg "$@"
         pass_count=$((pass_count+1))
     fi
 
     if [ "$pass_count" = 2 ]; then
+        # reset to base ffmpeg command
+        set -- -nostdin $OPTS_IN -i "$video_in"
         set -- "$@" $VIDOUT_OPTS -pass $pass_count "$video_out"
     else
         # same thing as above but without -pass
@@ -57,7 +60,7 @@ run_ffmpeg() {
         set -- "$@" $AUDOUT_OPTS "$audio_out"
     fi
 
-    ffmpeg "$@"
+	[ "$DRY_RUN" != true ] && ffmpeg "$@" || echo ffmpeg "$@"
 }
 
 
