@@ -6,6 +6,8 @@
 #	  $ ffloop.sh ./*.mkv
 #	  $ ffloop.sh ./files.txt
 
+# __NOTE:__ ffmpeg 4.4 won't read filenames with single quotes in them ('). This was tested on windows in a mingw64 terminal using `ffprobe` alone. The bug has nothing to do with this script.
+
 
 ### USER CONFIG ###
 
