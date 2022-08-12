@@ -10,13 +10,13 @@
 usage() {
     echo $(basename "$0"): ERROR: "$@" 1>&2
     echo USAGE: $(basename "$0") '[OPTION]... FILE...' 1>&2
-    echo -e "\t-d : (Dry run) Test script without modifying files"
-    echo -e "\t-p <FILE> : (Preset) Name of preset file containing ffmpeg options"
+    echo "    -d : (Dry run) Test script without modifying files"
+    echo "    -p <FILE> : (Preset) Name of preset file containing ffmpeg options"
     echo EXAMPLES:
     echo "Run script on all mkv files in the current directory"
-    echo -e "\t$(basename "$0") -p chromecast ./*.mkv"
+    echo "    $(basename "$0") -p chromecast ./*.mkv"
     echo "Run script on a list of filenames from a text file"
-    echo -e "\t$(basename "$0") -p divx ./files.txt"
+    echo "    $(basename "$0") -p divx ./files.txt"
     exit 1
 }
 
