@@ -24,4 +24,17 @@ A shell function for activating python virtual environments. Useful on windows o
 
 ## ffloop.sh
 
-Run ffmpeg on multiple files. Encoding options are loaded from a config file. Subtitles and audio can be extracted separately. Two-pass encoding is also supported. 
+Run ffmpeg on multiple files. 
+
+- Encoding options are loaded from a config file.
+- Subtitles and audio can be extracted separately.
+- Two-pass encoding is also supported. 
+- Dry-run option prints out the ffmpeg command instead of running it.
+
+Install:
+
+1. Clone the repository and copy the `ffloop` folder to a new location like `~/bin/src/ffloop/`
+2. Make sure `~/bin` is in your PATH.
+3. Create a symlink one level up: `ln -s ~/bin/src/ffloop/ffloop.sh ~/bin/ffloop.sh` 
+4. If using windows open cmd.exe as admin and create a symlink with `mklink` instead.
+
