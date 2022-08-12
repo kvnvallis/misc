@@ -3,24 +3,22 @@
 # A generic processing loop for running ffmpeg on multiple files. Outputs to current directory. If a text file is given as an argument, each line should contain the path to a single file, which will be passed to ffmpeg.
 
 # Useage:
-#	  $ ffloop.sh ./*.mkv
-#	  $ ffloop.sh ./files.txt
+#	  $ ffloop.sh -p [FILENAME] ./*.mkv
+#	  $ ffloop.sh -p [FILENAME] ./files.txt
 
-### USER CONFIG ###
 
-DRY_RUN=false  # echo commands but don't run them
-TWO_PASS=false
-EXTRACT_SUBS=true
-EXTRACT_AUDIO=false
-VID_EXTENSION=".mkv"
-SUB_EXTENSION=".srt"
-AUD_EXTENSION=""
-VIDOUT_OPTS="-map 0:v:0 -map 0:a:1 -c:a copy -c:v libx264 -s 640x480 -crf 18"
-SUBOUT_OPTS="-map 0:s:1 -c:s text"
-AUDOUT_OPTS="-c:a libmp3lame -q:a 1"
-OPTS_IN=""	# applied to input; usually not needed
-
-### END OF USER CONFIG ###
+usage() {
+    echo $(basename "$0"): ERROR: "$@" 1>&2
+    echo USAGE: $(basename "$0") '[OPTION]... FILE...' 1>&2
+    echo "\t-d : (Dry run) Test script without modifying files"
+    echo "\t-p <FILE> : (Preset) Name of preset file containing ffmpeg options"
+    echo EXAMPLES:
+    echo "Run script on all mkv files in the current directory"
+    echo "\t$(basename "$0") -p chromecast ./*.mkv"
+    echo "Run script on a list of filenames from a text file"
+    echo "\t$(basename "$0") -p divx ./files.txt"
+    exit 1
+}
 
 
 run_ffmpeg() {
@@ -50,11 +48,13 @@ run_ffmpeg() {
 				echo ffmpeg "$@"
 			fi
 			pass_count=$((pass_count+1))
+        else
+            pass_count=0
 		fi
 
 	# Test if video file exists, because sometimes we want to leave it in place while extracting audio or subtitles, without also re-encoding the video.
 	if [ ! -f "$video_out" ]; then
-		if [ "$pass_count" -eq 2 ]; then
+		if [ $pass_count -eq 2 ]; then
 			eval set -- "$base_cmd"
 			set -- "$@" $VIDOUT_OPTS -pass $pass_count "$video_out"
 		else
@@ -80,6 +80,33 @@ run_ffmpeg() {
 		echo ffmpeg "$@"
 	fi
 }
+
+
+PRESETS_DIR="$(readlink -f "$(dirname "$0")")/presets/"
+
+
+# Check for optional arguments; This method gives an unhelpful error message
+# from `shift` if you run `ffloop -d -p` by itself.
+
+d=0
+
+while :; do
+    case "$1" in 
+        -d) d=1;;
+        -p) shift; p="$1";;
+        --) shift; break;;
+        -*) usage "bad argument $1";;
+        *) break;;
+    esac
+    shift
+done
+
+[ $d -eq 1 ] && DRY_RUN=true
+[ "$p" != '' ] && PRESET_PATH="$PRESETS_DIR/$p" && [ -f "$PRESET_PATH" ] && . "$PRESET_PATH"
+
+
+# Check number of arguments
+[ $# -eq 0 ] && usage "Must specify at least one file as an argument"
 
 
 # Read each line of a file as input to ffmpeg

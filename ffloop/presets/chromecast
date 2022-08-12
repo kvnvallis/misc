@@ -1,0 +1,10 @@
+TWO_PASS=false
+EXTRACT_SUBS=false
+EXTRACT_AUDIO=false
+VID_EXTENSION=".mkv"
+SUB_EXTENSION=".srt"
+AUD_EXTENSION=""
+VIDOUT_OPTS="-map 0:v:0 -c:v libx264 -profile:v high -level:v 4.0 -vf format=yuv420p -crf 18"
+SUBOUT_OPTS="-map 0:s:0 -c:s text"
+AUDOUT_OPTS="-map 0:a:0 -c:a copy"
+OPTS_IN=""	# applied to input; usually not needed
