@@ -84,7 +84,6 @@ run_ffmpeg() {
 
 PRESETS_DIR="$(dirname "$(readlink -f "$0")")/presets/"
 
-
 # Check for optional arguments; This method gives an unhelpful error message
 # from `shift` if you run `ffloop -d -p` by itself.
 
@@ -102,7 +101,11 @@ while :; do
 done
 
 [ $d -eq 1 ] && DRY_RUN=true
-[ "$p" != '' ] && PRESET_PATH="$PRESETS_DIR/$p" && [ -f "$PRESET_PATH" ] && . "$PRESET_PATH"
+
+if [ "$p" != '' ]; then
+    PRESET_PATH="$PRESETS_DIR/$p"
+    [ -f "$PRESET_PATH" ] && . "$PRESET_PATH" || usage "Preset file does not exist"
+fi
 
 
 # Check number of arguments
