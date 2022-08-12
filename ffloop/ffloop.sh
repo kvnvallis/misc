@@ -10,13 +10,13 @@
 usage() {
     echo $(basename "$0"): ERROR: "$@" 1>&2
     echo USAGE: $(basename "$0") '[OPTION]... FILE...' 1>&2
-    echo "\t-d : (Dry run) Test script without modifying files"
-    echo "\t-p <FILE> : (Preset) Name of preset file containing ffmpeg options"
+    echo -e "\t-d : (Dry run) Test script without modifying files"
+    echo -e "\t-p <FILE> : (Preset) Name of preset file containing ffmpeg options"
     echo EXAMPLES:
     echo "Run script on all mkv files in the current directory"
-    echo "\t$(basename "$0") -p chromecast ./*.mkv"
+    echo -e "\t$(basename "$0") -p chromecast ./*.mkv"
     echo "Run script on a list of filenames from a text file"
-    echo "\t$(basename "$0") -p divx ./files.txt"
+    echo -e "\t$(basename "$0") -p divx ./files.txt"
     exit 1
 }
 
@@ -82,7 +82,7 @@ run_ffmpeg() {
 }
 
 
-PRESETS_DIR="$(readlink -f "$(dirname "$0")")/presets/"
+PRESETS_DIR="$(dirname "$(readlink -f "$0")")/presets/"
 
 
 # Check for optional arguments; This method gives an unhelpful error message
