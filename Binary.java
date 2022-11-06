@@ -3,9 +3,18 @@ import java.lang.Math;
 
 /* 
 
-Count in binary based on set number of bits. First calculate number of values, loop while i is less than values and increment i. Start a new loop tracking bits. For the first bit, the bit value is 2^1. Modulate i using the bit value, and check if the result is greater than or equal to half the bit value. Return 1 if true, 0 is false.
+Count in binary based on set number of bits. First calculate number of values,
+loop while i is less than values and increment i. Start a new loop tracking
+bits. For the first bit, the bit value is 2^1. Modulate i using the bit value,
+and check if the result is greater than or equal to half the bit value. Return
+1 if true, 0 is false.
 
-The counter variable `values` is counting in base 10. Those values are modulated with the max number of base 2 values which can be stored in the current bit. Divide by 2 in order to check how far we have counted. If we're still in the first half of possible values for the current bit, return 0. If we're in the second half, return 1. The principle is best demonstrated visually. Here is the output for all the 3 bit numbers.
+The counter variable `values` is counting in base 10. Those values are
+modulated with the max number of base 2 values which can be stored in the
+current bit. Divide by 2 in order to check how far we have counted. If we're
+still in the first half of possible values for the current bit, return 0. If
+we're in the second half, return 1. The principle is best demonstrated
+visually. Here is the output for all the 3 bit numbers.
 
 000
 001
