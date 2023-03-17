@@ -16,7 +16,7 @@ sensor='k10temp'
 
 for path in /sys/class/hwmon/hwmon*; do
     read line < "${path}/name"
-    if [ $line = $sensor ]; then
+    if [ "$line" = "$sensor" ]; then
         ln -sf "${path}/temp1_input" "${HOME}/.${line}"
         break
     fi
