@@ -1,13 +1,15 @@
 #!/usr/bin/env sh
 
-# written for and tested on a thinkpad e455 running arch linux with lm_sensors and thinkpad_acpi
+# Written for and tested on a thinkpad e455 running arch linux with lm_sensors and thinkpad_acpi
 
-# this script looks for the directory containing the sensor name and creates a
+# This script looks for the directory containing the sensor name and creates a
 # symlink (in $HOME) to the temperature file from that same directory
 
-# we have to do this because the order of the hwmon files changes at boot.
+# We have to do this because the order of the hwmon files changes at boot. Run
+# the script at startup so that a new symlink is created each time you restart
+# your computer.
 
-# the resulting symlink can be used as the path for the temperature sensor in /etc/i3status.conf
+# The resulting symlink can be used as the path for the temperature sensor in /etc/i3status.conf
 
 
 sensor='k10temp'
