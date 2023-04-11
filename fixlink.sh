@@ -3,7 +3,7 @@
 # Fix symlinks where the target files have been moved to a new location.
 
 # Run this script on multiple files using `find -exec`:
-# find /home/kodi/library -lname '/home/kodi/btdownloads/*' -exec ./fixlink.sh {} \;
+# find /home/kodi/library -lname '/mnt/files/btdownloads/*' -exec ./fixlink.sh {} \;
 
 # Or test it on just one file:
 # ./fixlink.sh /home/kodi/library/movie.mkv
@@ -19,7 +19,7 @@ SYMLINK="$1"
 NEWPATH="/mnt/storage/"
 
 ## Full path to the folder where target files used to live 
-OLDPATH="/home/kodi/"
+OLDPATH="/mnt/files/"
 
 ## Full path to where the symlink is currently pointing
 TARGET_FILE="$(readlink "$SYMLINK")"
