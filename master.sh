@@ -20,7 +20,7 @@
 #     master.sh rename
 
 
-# First cd into script directory, which should be in "Master Levels of Doom" folder
+# First cd into script directory, which should be "Master Levels of Doom" folder
 cd "$(dirname -- "$(readlink -f "$0")")"
 
 # Use full paths, or paths relative to script location
