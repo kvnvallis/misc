@@ -15,10 +15,6 @@
 #     master.sh list
 #     master.sh run attack.wad
 
-# __NOTE:__ If your wad files are UPPERCASE, make sure to type them that way, or rename
-# them to lowercase with the provided rename function:
-#     master.sh rename
-
 
 # First cd into script directory, which should be "Master Levels of Doom" folder
 cd "$(dirname -- "$(readlink -f "$0")")"
@@ -28,6 +24,41 @@ cd "$(dirname -- "$(readlink -f "$0")")"
 pwads_dir='./master/wads/'
 doom2_wad='./doom2/DOOM2.WAD'
 
+_map() {
+    case "${1,,}" in
+        virgil.wad)
+            level=3
+            ;;
+        minos.wad)
+            level=5
+            ;;
+        bloodsea.wad)
+            level=7
+            ;;
+        mephisto.wad)
+            level=7
+            ;;
+        nessus.wad)
+            level=7
+            ;;
+        geryon.wad)
+            level=8
+            ;;
+        vesperas.wad)
+            level=9
+            ;;
+        blacktwr.wad)
+            level=25
+            ;;
+        teeth.wad)
+            level=31
+            ;;
+        *)
+            level=1
+            ;;
+    esac
+}
+
 list() {
     # List wad files in $pwads_dir
     for file in "$pwads_dir"/*.[Ww][Aa][Dd]; do
@@ -35,19 +66,9 @@ list() {
     done
 }
 
-rename() {
-    # Rename all your wads in $pwads_dir to lowercase, so they're easier to type
-    for file in "$pwads_dir"/*.[Ww][Aa][Dd]; do
-        newfile="${file,,}"
-        if [ "$file" != "$newfile" ]; then
-            mv -- "$file" "$newfile" && \
-            echo RENAMED: $(basename "$file") to $(basename "$newfile")
-        fi
-    done
-}
-
 run() {
-    chocolate-doom -iwad "$doom2_wad" -file "$pwads_dir"/"$1" -episode 1
+    _map "$1" && \
+    chocolate-doom -iwad "$doom2_wad" -file "$pwads_dir"/"$1" -warp "$level"
 }
 
 
