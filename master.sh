@@ -50,4 +50,13 @@ run() {
     chocolate-doom -iwad "$doom2_wad" -file "$pwads_dir"/"$1" -episode 1
 }
 
-"$@"
+
+# Call arguments to script if first arg is a function
+case "$(type -- "$1" 2>/dev/null)" in
+    *function*)
+        "$@"
+        ;;
+    *)
+        echo "$1" is not a function
+        ;;
+esac
