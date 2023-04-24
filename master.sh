@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-# Launch master levels of doom pwads with chocolate-doom.
+# Launch master levels of doom wads with chocolate-doom.
 
 # INSTALLATION:
 #     1. Copy master.sh to Master Levels of Doom folder 
@@ -10,7 +10,7 @@
 #     ln -s "$HOME/games/Master Levels of Doom/master.sh" ~/bin/master.sh
 
 # USAGE:
-#     master.sh FUNCTION [PWAD]
+#     master.sh FUNCTION [WAD]
 # EXAMPLES:
 #     master.sh list
 #     master.sh run attack.wad
