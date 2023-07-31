@@ -9,20 +9,27 @@
 #     cp master.sh "$HOME/games/Master Levels of Doom/master.sh"
 #     ln -s "$HOME/games/Master Levels of Doom/master.sh" ~/bin/master.sh
 
-# USAGE:
-#     master.sh FUNCTION [WAD]
-# EXAMPLES:
-#     master.sh list
-#     master.sh run attack.wad
+
+_usage() {
+    cat << EOF
+USAGE:
+    master.sh FUNCTION [WAD]
+EXAMPLES:
+    master.sh list
+    master.sh run attack.wad
+EOF
+}
 
 
 # First cd into script directory, which should be "Master Levels of Doom" folder
 cd "$(dirname -- "$(readlink -f "$0")")"
 
+
 # Use full paths, or paths relative to script location
 # Defaults assume directory structure of Steam release
 pwads_dir='./master/wads/'
 doom2_wad='./doom2/DOOM2.WAD'
+
 
 _map() {
     case "${1,,}" in
@@ -59,12 +66,14 @@ _map() {
     esac
 }
 
+
 list() {
     # List wad files in $pwads_dir
     for file in "$pwads_dir"/*.[Ww][Aa][Dd]; do
         echo $(basename "$file")
     done
 }
+
 
 run() {
     _map "$1" && \
@@ -78,6 +87,6 @@ case "$(type -- "$1" 2>/dev/null)" in
         "$@"
         ;;
     *)
-        echo "$1" is not a function
+        _usage
         ;;
 esac
