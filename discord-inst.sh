@@ -11,4 +11,6 @@ if [ -d "$destdir" ]; then
     tar xvz -C "$destdir" &&
     echo New version finished installing ||
     echo ERROR: Installation failed
+else
+    echo "Invalid destination: $destdir"
 fi
