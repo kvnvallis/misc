@@ -38,6 +38,7 @@ harden() {
     echo Replace symbolic links with hard links...
 
     # find symlinks (-type l) but not broken symlinks (-xtype l)
+    # -0 interprets null line endings from -print0
     # -I {} required to prevent spaces being collapsed or trimmed
     find "$1" -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
         for file in "{}"; do
