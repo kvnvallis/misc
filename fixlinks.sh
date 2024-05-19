@@ -21,10 +21,10 @@ EOF
 
 
 clean() {
+    echo Remove broken symbolic links...
+
     # -xtype returns true if symlink points to a file of the type specified
     # if a symlink points to a symlink, that means it's broken
-    #find "$1" -xtype l -delete -printf 'DELETED: %p\n'
-    echo Remove broken symbolic links...
     OUTPUT=$(find "$1" -xtype l -ok rm -- {} \; -printf 'DELETED: %p\n')
     if [ -z "$OUTPUT" ]; then
         echo Nothing to remove.
@@ -76,5 +76,4 @@ case "$(type -- "$1" 2>/dev/null)" in
         _usage
         ;;
 esac
-
 
