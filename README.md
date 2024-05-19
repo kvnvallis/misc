@@ -2,9 +2,9 @@
 
 Experiments, coding challenges, and anything else.
 
-## fixlinks.sh
+## modlink.sh
 
-Small posix script meant to be used with `find -exec` to fix symlinks where target files or folders have moved to a new location. Preserves symlink filenames and parent folders of the symlink targets. 
+Small posix script meant to be used with `find -exec` to modify symlinks where target files or folders have moved to a new location. Preserves symlink filenames and parent folders of the symlink targets. 
 
 ## autoip.py
 
