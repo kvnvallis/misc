@@ -47,7 +47,7 @@ harden() {
             # read from terminal instead of stdin because of pipe
             rm -i -- "$file" < /dev/tty
             if [ ! -e "$file" ]; then
-                ln "$dest" "$file" &&
+                ln -- "$dest" "$file" &&
                 echo Created hard link at: "$file"
             fi
         done
