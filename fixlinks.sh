@@ -44,7 +44,7 @@ harden() {
     find "$1" -P -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
         for link in "{}"; do
             #echo $0    # debug param $0
-            dest="$(readlink -e "$link")"
+            dest="$(readlink -f "$link")"
             if [ -f "$dest" ]; then
                 # read from terminal instead of stdin because of pipe
                 rm -i -- "$link" </dev/tty
