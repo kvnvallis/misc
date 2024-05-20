@@ -26,7 +26,7 @@ clean() {
     # -P to explicitly never follow symlinks
     # -xtype returns true if symlink points to a file of the type specified
     # if a symlink points to a symlink, that means it's broken
-    OUTPUT=$(find "$1" -P -xtype l -ok rm -- {} \; -printf 'DELETED: %p\n')
+    OUTPUT=$(find -P "$1" -xtype l -ok rm -- {} \; -printf 'DELETED: %p\n')
     if [ -z "$OUTPUT" ]; then
         echo Nothing to remove.
     else
@@ -41,7 +41,7 @@ harden() {
     # find symlinks (-type l) but not broken symlinks (-xtype l)
     # -0 interprets null line endings from -print0
     # -I {} required to prevent spaces being collapsed or trimmed
-    find "$1" -P -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
+    find -P "$1" -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
         for link in "{}"; do
             #echo $0    # debug param $0
             dest="$(readlink -f "$link")"
@@ -62,7 +62,7 @@ harden() {
 
 # Call arguments to script if first arg is a function
 case "$(type -- "$1" 2>/dev/null)" in
-    *is\ a\ function*)
+    *function*)
         if [ ! -d "$2" ]; then
             echo Not a valid directory: "$2"
             exit 1
