@@ -7,7 +7,7 @@ USAGE:
     fixlinks.sh FUNCTION PATH
 DESCRIPTION:
     Recursively find symbolic links in PATH. Remove broken symlinks, or
-    replace symlinks with hard links.
+    replace symlinks with hard links. A hard link can only be created if the symlink points to a file and not a directory. If its target is not a file, the symlink will be skipped and left in place.
 FUNCTIONS:
     harden
         convert unbroken symbolic links to hard links
@@ -23,9 +23,10 @@ EOF
 clean() {
     echo Remove broken symbolic links...
 
+    # -P to explicitly never follow symlinks
     # -xtype returns true if symlink points to a file of the type specified
     # if a symlink points to a symlink, that means it's broken
-    OUTPUT=$(find "$1" -xtype l -ok rm -- {} \; -printf 'DELETED: %p\n')
+    OUTPUT=$(find "$1" -P -xtype l -ok rm -- {} \; -printf 'DELETED: %p\n')
     if [ -z "$OUTPUT" ]; then
         echo Nothing to remove.
     else
@@ -40,15 +41,17 @@ harden() {
     # find symlinks (-type l) but not broken symlinks (-xtype l)
     # -0 interprets null line endings from -print0
     # -I {} required to prevent spaces being collapsed or trimmed
-    find "$1" -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
-        for file in "{}"; do
+    find "$1" -P -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
+        for link in "{}"; do
             #echo $0    # debug param $0
-            dest="$(readlink -e "$file")"
-            # read from terminal instead of stdin because of pipe
-            rm -i -- "$file" < /dev/tty
-            if [ ! -e "$file" ]; then
-                ln -- "$dest" "$file" &&
-                echo Created hard link at: "$file"
+            dest="$(readlink -e "$link")"
+            if [ -f "$dest" ]; then
+                # read from terminal instead of stdin because of pipe
+                rm -i -- "$link" </dev/tty
+                if [ ! -e "$link" ]; then
+                    ln -- "$dest" "$link" &&
+                    echo Created hard link at: "$link"
+                fi
             fi
         done
     ' sh
