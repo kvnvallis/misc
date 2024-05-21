@@ -40,7 +40,7 @@ harden() {
 
     # find symlinks (-type l) but not broken symlinks (-xtype l)
     # -0 interprets null line endings from -print0 and preserves whitespace
-    find -P "$1" -type l ! -xtype l -print0 | xargs -0 sh -c '
+    find -P "$1" -type l ! -xtype l -print0 | xargs -0 -- sh -c -- '
         for link; do
             dest="$(readlink -f "$link")"
             if [ -f "$dest" ]; then
