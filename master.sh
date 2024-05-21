@@ -82,7 +82,7 @@ run() {
 
 
 # Call arguments to script if first arg is a function
-case "$(type -t -- "$1") in
+case $(type -t -- "$1") in
     function)
         "$@"
         ;;
