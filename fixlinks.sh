@@ -39,11 +39,9 @@ harden() {
     echo Replace symbolic links with hard links...
 
     # find symlinks (-type l) but not broken symlinks (-xtype l)
-    # -0 interprets null line endings from -print0
-    # -I {} required to prevent spaces being collapsed or trimmed
-    find -P "$1" -type l ! -xtype l -print0 | xargs -0 -I {} sh -c '
-        for link in "{}"; do
-            #echo $0    # debug param $0
+    # -0 interprets null line endings from -print0 and preserves whitespace
+    find -P "$1" -type l ! -xtype l -print0 | xargs -0 sh -c '
+        for link; do
             dest="$(readlink -f "$link")"
             if [ -f "$dest" ]; then
                 # read from terminal instead of stdin because of pipe
