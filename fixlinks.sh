@@ -59,7 +59,7 @@ harden() {
 
 
 # Call arguments to script if first arg is a function
-case $(type -- "$1") in
+case $(type -- "$1" 2>/dev/null) in
     *function*)
         if [ ! -d "$2" ]; then
             echo Not a valid directory: "$2"
