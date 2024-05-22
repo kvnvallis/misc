@@ -48,7 +48,7 @@ delete_symlink() {
     link="$1"
     if [ -L "$link" ]; then
         rm -i -- "$link" </dev/tty
-        if [ ! -e "$link" ]; then echo DELETED: "$link"; fi
+        if [ ! -L "$link" ]; then echo DELETED: "$link"; fi
     else
         echo Cannot delete "$link"
         return 1
@@ -102,7 +102,7 @@ replace_symlink_to_file() {
     link="$1"
     target=$(realpath -m -- "$link")
     delete_symlink "$link"
-    if [ ! -e "$link" ]; then
+    if [ ! -L "$link" ]; then
         # test -f so ln never creates a hard link to a symlink
         [ -f "$target" ] && ln -- "$target" "$link"
     fi
@@ -114,7 +114,7 @@ replace_symlink_to_dir() {
     target=$(realpath -m -- "$link")
     if [ -L "$link" ]; then
         delete_symlink "$link"
-        if [ ! -e "$link" ]; then
+        if [ ! -L "$link" ]; then
             folder="$link"
             mkdir -- "$folder" &&
             walk_and_link "$target" "$folder"
