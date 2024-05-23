@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO: Check that target exists on the same drive before replacing a symlink
+
 
 SCRIPT_PATH="$0"
 
