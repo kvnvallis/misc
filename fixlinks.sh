@@ -1,6 +1,18 @@
 #!/bin/sh
 
+
 # TODO: Check for newlines in filenames before running clean or harden
+#
+# Currently if the script encounters a filename named new$'\n'line, something
+# like this will happen...
+#
+# $ fixlinks.sh clean ./
+# Remove broken symbolic links...
+# Cannot delete ./new
+# Cannot delete line
+#
+# Unless ./new and line are also symlinks, in which case it will attempt to
+# delete them
 
 
 usage() {
