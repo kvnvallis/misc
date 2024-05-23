@@ -13,6 +13,13 @@ NEWLINE='
 # newlines in this script, but I gave up when I got to carriage returns. You
 # should check your own computer for filenames containing any command
 # characters. They aren't supposed to be there.
+#
+# $ find / -name \*$'\n'\* -o -name \*$'\r'\*
+#
+# Also consider backing up your symlinks (cd into the directory you want to
+# back up).
+#
+# $ find ./ -type l ! -xtype l -printf '%P\0' | xargs -0 -I {} cp --parents -av -- {} /mnt/hdd0/symlinkbak/
 
 
 usage() {
@@ -162,7 +169,6 @@ clean() {
     path="$1"
     echo Remove broken symbolic links...
     # find broken symlinks
-    # filter out filenames containing newlines
     find -P "$path" -xtype l \! -path "*$NEWLINE*" | while IFS= read -r link; do
         delete_symlink "$link"
     done
