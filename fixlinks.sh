@@ -69,7 +69,7 @@ link_children() {
     folder="$2"
 
     if [ -d "$target" ] && [ -d "$folder" ]; then
-        find -P "$target" -maxdepth 1 -type f | while IFS= read -r file; do
+        find -P "$target" -maxdepth 1 -type f \! -name "*$NEWLINE*" | while IFS= read -r file; do
             ln -- "$file" "$folder"
         done
     else
@@ -88,7 +88,7 @@ walk_and_link() {
         echo Creating links in "$folder"
         link_children "$target" "$folder"
         # while there are more directories, keep on walking
-        find -P "$target" -maxdepth 1 -mindepth 1 -type d | while IFS= read -r subdir; do
+        find -P "$target" -maxdepth 1 -mindepth 1 -type d \! -name "*$NEWLINE*" | while IFS= read -r subdir; do
             # test on $subdir ignores any blank lines in the find output
             if [ "$subdir" ]; then
                 next_folder="$folder/$(basename "$subdir")"
