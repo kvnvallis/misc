@@ -3,20 +3,10 @@
 
 SCRIPTNAME=$(basename "$0")
 
-
-# TODO: Check for newlines in filenames before running clean or harden
-#
-# Currently if the script encounters a filename named new$'\n'line, something
-# like this will happen...
-#
-# $ fixlinks.sh clean ./
-# Remove broken symbolic links...
-# Cannot delete ./new
-# Cannot delete line
-#
-# Unless ./new and line are also symlinks, in which case it will attempt to
-# delete them. You should manually check for filenames with newlines before running
-# this script.
+#########
+NEWLINE='
+'
+#########
 
 
 usage() {
@@ -144,7 +134,7 @@ harden() {
     path="$1"
     echo Replace symbolic links with hard links...
     # find symlinks but not broken symlinks
-    find -P "$path" -type l ! -xtype l | while IFS= read -r link; do
+    find -P "$path" -type l ! -xtype l \! -name "*$NEWLINE*" | while IFS= read -r link; do
         target=$(realpath -m -- "$link")
 
         if [ -f "$target" ]; then
@@ -166,7 +156,8 @@ clean() {
     path="$1"
     echo Remove broken symbolic links...
     # find broken symlinks
-    find -P "$path" -xtype l | while IFS= read -r link; do
+    # filter out filenames containing newlines
+    find -P "$path" -xtype l \! -name "*$NEWLINE*" | while IFS= read -r link; do
         delete_symlink "$link"
     done
 }
