@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-SCRIPTNAME=$(basename "$0")
+SCRIPT_PATH="$0"
 
 #########
 NEWLINE='
@@ -145,7 +145,7 @@ harden() {
 
         if [ -f "$target" ]; then
             # make sure the script doesn't try to replace itself
-            if [ $(basename "$target") != "$SCRIPTNAME" ]; then
+            if [ "$target" != $(realpath -m "$SCRIPT_PATH") ]; then
                 echo Target is a file
                 replace_symlink_to_file "$link"
             fi
