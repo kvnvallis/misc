@@ -134,7 +134,7 @@ harden() {
     path="$1"
     echo Replace symbolic links with hard links...
     # find symlinks but not broken symlinks
-    find -P "$path" -type l ! -xtype l \! -name "*$NEWLINE*" | while IFS= read -r link; do
+    find -P "$path" -type l \! -xtype l \! -name "*$NEWLINE*" | while IFS= read -r link; do
         target=$(realpath -m -- "$link")
 
         if [ -f "$target" ]; then
