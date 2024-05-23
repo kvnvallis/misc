@@ -9,6 +9,12 @@ NEWLINE='
 #########
 
 
+# WARNING: Some effort was made to protect against filenames containing
+# newlines in this script, but I gave up when I got to carriage returns. You
+# should check your own computer for filenames containing any command
+# characters. They aren't supposed to be there.
+
+
 usage() {
     cat << EOF
 USAGE:
