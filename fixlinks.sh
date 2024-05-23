@@ -15,7 +15,8 @@ SCRIPTNAME=$(basename "$0")
 # Cannot delete line
 #
 # Unless ./new and line are also symlinks, in which case it will attempt to
-# delete them
+# delete them. You should manually check for filenames with newlines before running
+# this script.
 
 
 usage() {
@@ -126,6 +127,7 @@ replace_symlink_to_file() {
 
 replace_symlink_to_dir() {
     link="$1"
+    echo "$link"
     target=$(realpath -m -- "$link")
     if [ -L "$link" ]; then
         delete_symlink "$link"
@@ -146,9 +148,9 @@ harden() {
         target=$(realpath -m -- "$link")
 
         if [ -f "$target" ]; then
-            echo Target is a file
             # make sure the script doesn't try to replace itself
             if [ $(basename "$target") != "$SCRIPTNAME" ]; then
+                echo Target is a file
                 replace_symlink_to_file "$link"
             fi
         elif [ -d "$target" ]; then
