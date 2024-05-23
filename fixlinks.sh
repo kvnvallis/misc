@@ -1,6 +1,9 @@
 #!/bin/sh
 
 
+SCRIPTNAME=$(basename "$0")
+
+
 # TODO: Check for newlines in filenames before running clean or harden
 #
 # Currently if the script encounters a filename named new$'\n'line, something
@@ -144,7 +147,10 @@ harden() {
 
         if [ -f "$target" ]; then
             echo Target is a file
-            replace_symlink_to_file "$link"
+            # make sure the script doesn't try to replace itself
+            if [ $(basename "$target") != "$SCRIPTNAME" ]; then
+                replace_symlink_to_file "$link"
+            fi
         elif [ -d "$target" ]; then
             echo Target is a directory
             replace_symlink_to_dir "$link"
