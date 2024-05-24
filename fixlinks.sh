@@ -114,7 +114,7 @@ link_children() {
 
 walk_and_link() {
     # Descend into every subdirectory in the target and create hard links to
-    # every file along the way, inside a new directory that matches their targets'.
+    # every file along the way.
     target="$1"  # target is a directory with files to link to
     folder="$2"  # folder is where links are created
 
