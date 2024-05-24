@@ -48,14 +48,21 @@ FUNCTIONS:
         using realpath so that hard links will point to the final target. If
         you replace a symlink that points to a directory containing a mount
         point, and the mounted files exist on another hard drive, hard links
-        will not be created for those files.
+        will not be created for those files. It is a mistake to try and replace a
+        symlink that points backward to one of its own parent directories. But
+        checks are in place that should prevent it from happening.
 
     clean
         delete broken symbolic links
 
 EXAMPLES:
-    fixlinks.sh harden /mnt/hdd0/
-    fixlinks.sh clean /mnt/hdd0/
+    fixlinks.sh harden /mnt/hdd0/library
+        Symbolic links in your media library point to files in
+        /mnt/hdd0/downloads. Replace those symlinks with hard links so that
+        when downloads are deleted they still exist in your library.
+
+    fixlinks.sh clean /mnt/hdd0/library
+        Remove broken symlinks that can't be replaced with hard links.
 EOF
 }
 
