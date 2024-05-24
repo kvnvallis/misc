@@ -41,7 +41,8 @@ FUNCTIONS:
         Replace unbroken symbolic links with hard links. If a symlink points to a
         directory, the symlink will be replaced with a directory containing
         hard links to all files within the target directory. Sub-directories
-        will also be created and their contents linked.
+        will also be created and their contents linked. If the target directory
+        contains even more symlinks, they will be ignored.
 
         It is safe to replace symlinks pointing to symlinks. They are resolved
         using realpath so that hard links will point to the final target. If
@@ -87,7 +88,7 @@ delete_symlink() {
         rm -i -- "$link" </dev/tty
         if [ ! -L "$link" ]; then echo DELETED: "$link"; fi
     else
-        echo Cannot delete "$link"
+        echo Can not delete "$link"
         return 1
     fi
 }
@@ -112,7 +113,8 @@ link_children() {
 
 
 walk_and_link() {
-    # TODO: Uh oh, what if symlink points to a parent directory?
+    # TODO: Consider using find type -d and mkdir -p to create all the folders in one go.
+
     # Descend into every subdirectory in the target and create hard links to
     # every file along the way, inside a new directory that matches their targets'.
     target="$1"  # target is a directory with files to link to
@@ -150,15 +152,22 @@ replace_symlink_to_file() {
 
 replace_symlink_to_dir() {
     link="$1"
-    echo "$link"
     target=$(realpath -m -- "$link")
-    if [ -L "$link" ]; then
-        delete_symlink "$link"
-        if [ ! -L "$link" ]; then
-            folder="$link"
-            mkdir -- "$folder" &&
-            walk_and_link "$target" "$folder"
+    match=$(find "$target" -inum $(stat -c '%i' "$link"))
+    # Check that the link does not exist under the target
+    if [ -z "$match" ]; then
+
+        if [ -L "$link" ]; then
+            delete_symlink "$link"
+            if [ ! -L "$link" ]; then
+                folder="$link"
+                mkdir -- "$folder" &&
+                walk_and_link "$target" "$folder"
+            fi
         fi
+
+    else
+        echo Cannot replace symlink that points to a parent folder
     fi
 }
 
