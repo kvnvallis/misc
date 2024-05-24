@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# TODO: Check that target exists on the same drive before replacing a symlink
-
 
 SCRIPT_PATH="$0"
 
@@ -152,15 +150,20 @@ harden() {
     find -P "$path" -type l \! -xtype l \! -path "*$NEWLINE*" | while IFS= read -r link; do
         target=$(realpath -m -- "$link")
 
-        if [ -f "$target" ]; then
-            # make sure the script doesn't try to replace itself
-            if [ "$target" != $(realpath -m "$SCRIPT_PATH") ]; then
-                echo Target is a file
-                replace_symlink_to_file "$link"
+        # skip replacing the symlink if target exists on a different drive
+        if [ $(stat -c '%d' "$target") -eq $(stat -c '%d' "$link") ]; then
+
+            if [ -f "$target" ]; then
+                # make sure the script doesn't try to replace itself
+                if [ "$target" != $(realpath -m "$SCRIPT_PATH") ]; then
+                    echo Target is a file
+                    replace_symlink_to_file "$link"
+                fi
+            elif [ -d "$target" ]; then
+                echo Target is a directory
+                replace_symlink_to_dir "$link"
             fi
-        elif [ -d "$target" ]; then
-            echo Target is a directory
-            replace_symlink_to_dir "$link"
+
         fi
 
     done
