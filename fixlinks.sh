@@ -113,8 +113,6 @@ link_children() {
 
 
 walk_and_link() {
-    # TODO: Consider using find type -d and mkdir -p to create all the folders in one go.
-
     # Descend into every subdirectory in the target and create hard links to
     # every file along the way, inside a new directory that matches their targets'.
     target="$1"  # target is a directory with files to link to
@@ -128,8 +126,10 @@ walk_and_link() {
             # test on $subdir ignores any blank lines in the find output
             if [ "$subdir" ]; then
                 next_folder="$folder/$(basename "$subdir")"
-                mkdir -- "$next_folder"
-                walk_and_link "$subdir" "$next_folder"
+                # Existing folders put a concrete limit on recursion
+                if [ -d "$next_folder" ]; then
+                    walk_and_link "$subdir" "$next_folder"
+                fi
             fi
         done
     else
@@ -161,13 +161,19 @@ replace_symlink_to_dir() {
             delete_symlink "$link"
             if [ ! -L "$link" ]; then
                 folder="$link"
-                mkdir -- "$folder" &&
+                mkdir -- "$folder"
+                # Creating all subdirectories at once is safer than recursively running mkdir 
+                find -P "$target" -type d \! -path "*$NEWLINE*" -printf '%P\n' | while IFS= read -r dir; do
+                    if [ "$dir" ]; then
+                        mkdir -- "$folder/$dir"
+                    fi
+                done
                 walk_and_link "$target" "$folder"
             fi
         fi
 
     else
-        echo Cannot replace symlink that points to a parent folder
+        echo ERROR: Symlink exists inside target: "$link"
     fi
 }
 
@@ -185,11 +191,11 @@ harden() {
             if [ -f "$target" ]; then
                 # make sure the script doesn't try to replace itself
                 if [ "$target" != $(realpath -m "$SCRIPT_PATH") ]; then
-                    echo Target is a file
+                    echo Target is a file: "$target"
                     replace_symlink_to_file "$link"
                 fi
             elif [ -d "$target" ]; then
-                echo Target is a directory
+                echo Target is a directory: "$target"
                 replace_symlink_to_dir "$link"
             fi
 
