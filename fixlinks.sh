@@ -12,7 +12,8 @@ NEWLINE='
 # WARNING: Some effort was made to protect against filenames containing
 # newlines in this script, but I gave up when I got to carriage returns. You
 # should check your own computer for filenames containing any command
-# characters. They aren't supposed to be there.
+# characters. They aren't supposed to be there. Only run fixlinks.sh on files
+# you trust.
 #
 # $ find / -name \*$'\n'\* -o -name \*$'\r'\*
 #
@@ -26,6 +27,7 @@ usage() {
     cat << EOF
 USAGE:
     fixlinks.sh FUNCTION PATH
+
 DESCRIPTION:
     Recursively find all symbolic links in PATH. Functions allow you to remove
     broken symlinks, or replace symlinks with hard links. Because of how the
@@ -33,14 +35,23 @@ DESCRIPTION:
     glob pattern like *.mp4, because the script only takes one path as an
     argument. Only the functions listed below are meant to be run at the
     command line.
+
 FUNCTIONS:
     harden
         Replace unbroken symbolic links with hard links. If a symlink points to a
         directory, the symlink will be replaced with a directory containing
         hard links to all files within the target directory. Sub-directories
         will also be created and their contents linked.
+
+        It is safe to replace symlinks pointing to symlinks. They are resolved
+        using realpath so that hard links will point to the final target. If
+        you replace a symlink that points to a directory containing a mount
+        point, and the mounted files exist on another hard drive, hard links
+        will not be created for those files.
+
     clean
         delete broken symbolic links
+
 EXAMPLES:
     fixlinks.sh harden /mnt/hdd0/
     fixlinks.sh clean /mnt/hdd0/
@@ -59,6 +70,13 @@ EOF
 #     subdirectories. This is also a good way to test the script without
 #     operating on any files. Modify the script by adding echo in front of
 #     link_children's ln command and it will perform a dry-run.
+
+
+same_device(){
+    # Return 0 (true) if both files exist on the same partition
+    # Given a mount point, stat outputs the id of the mounted device
+    [ $(stat -c '%d' "$1") -eq $(stat -c '%d' "$2") ]
+}
 
 
 delete_symlink() {
@@ -83,7 +101,9 @@ link_children() {
 
     if [ -d "$target" ] && [ -d "$folder" ]; then
         find -P "$target" -maxdepth 1 -type f \! -path "*$NEWLINE*" | while IFS= read -r file; do
-            ln -- "$file" "$folder"
+            if same_device "$file" "$folder"; then
+                ln -- "$file" "$folder"
+            fi
         done
     else
         return 1
@@ -92,6 +112,7 @@ link_children() {
 
 
 walk_and_link() {
+    # TODO: Uh oh, what if symlink points to a parent directory?
     # Descend into every subdirectory in the target and create hard links to
     # every file along the way, inside a new directory that matches their targets'.
     target="$1"  # target is a directory with files to link to
@@ -105,7 +126,6 @@ walk_and_link() {
             # test on $subdir ignores any blank lines in the find output
             if [ "$subdir" ]; then
                 next_folder="$folder/$(basename "$subdir")"
-                echo Creating directory "$next_folder"
                 mkdir -- "$next_folder"
                 walk_and_link "$subdir" "$next_folder"
             fi
@@ -151,7 +171,7 @@ harden() {
         target=$(realpath -m -- "$link")
 
         # skip replacing the symlink if target exists on a different drive
-        if [ $(stat -c '%d' "$target") -eq $(stat -c '%d' "$link") ]; then
+        if same_device "$target" "$link"; then
 
             if [ -f "$target" ]; then
                 # make sure the script doesn't try to replace itself
