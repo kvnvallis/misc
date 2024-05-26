@@ -81,8 +81,8 @@ EOF
 
 
 same_device(){
-    # Return 0 (true) if both files exist on the same partition
-    # Given a mount point, stat outputs the id of the mounted device
+    # Return 0 (true) if both files exist on the same partition.
+    # stat operates on any file including folders and links.
     [ $(stat -c '%d' "$1") -eq $(stat -c '%d' "$2") ]
 }
 
@@ -192,7 +192,9 @@ harden() {
     find -P "$path" -type l \! -xtype l \! -path "*$NEWLINE*" | while IFS= read -r link; do
         target=$(realpath -m -- "$link")
 
-        # skip replacing the symlink if target exists on a different drive
+        # Skip replacing the symlink if target exists on a different drive.
+        # same_device runs stat on both files. Given a mount point, stat
+        # outputs the id of the mounted device.
         if same_device "$target" "$link"; then
 
             if [ -f "$target" ]; then
